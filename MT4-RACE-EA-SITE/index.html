@@ -1535,52 +1535,98 @@
     .role:hover {
       transform: none !important;
     }
-/* iPhone Safari 배경 밝아짐 방지 */
+/* iPhone Safari 첫 화면 밝아짐 방지 */
 @supports (-webkit-touch-callout: none) {
+  html,
   body {
-    background:
-      radial-gradient(
-        circle at 50% 0%,
-        rgba(216, 182, 111, 0.07),
-        transparent 34%
-      ),
-      linear-gradient(
-        180deg,
-        #09111b 0%,
-        #060a10 55%,
-        #05080d 100%
-      ) !important;
+    background: #060a10 !important;
   }
 
+  body {
+    background:
+      radial-gradient(circle at 50% 0%, rgba(216,182,111,0.04), transparent 30%),
+      linear-gradient(180deg, #09111b 0%, #060a10 55%, #05080d 100%) !important;
+  }
+
+  .ambient,
+  .orb,
+  .gr-ambient,
   .gr-orb {
-    display: none;
+    display: none !important;
   }
 
   body::before {
-    opacity: 0.35;
+    opacity: 0.16 !important;
   }
 
   body::after {
     background:
-      radial-gradient(
-        circle at center,
-        transparent 35%,
-        rgba(0, 0, 0, 0.28) 100%
-      );
+      radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.35) 100%) !important;
   }
 
-  .hero,
-  .section,
-  .section-card,
-  .selector-panel,
-  .scope-notice,
-  .risk-box {
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
+  .profile {
+    background:
+      radial-gradient(circle at 50% 0%, rgba(216,182,111,0.08), transparent 43%),
+      linear-gradient(145deg, rgba(20,29,43,0.98), rgba(10,15,23,0.99)) !important;
+    border-color: rgba(216,182,111,0.18) !important;
+    box-shadow:
+      0 24px 60px rgba(0,0,0,0.42),
+      inset 0 1px 0 rgba(255,255,255,0.035) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
   }
 
-  .hero::after {
-    opacity: 0.35;
+  .profile::before,
+  .profile::after {
+    display: none !important;
+    animation: none !important;
+  }
+
+  .profile-logo-wrap::before,
+  .profile-logo-wrap::after {
+    animation: none !important;
+  }
+
+  .profile-logo-wrap::before {
+    opacity: 0.48 !important;
+    filter: none !important;
+  }
+
+  .profile-logo-wrap::after {
+    opacity: 0.65 !important;
+  }
+
+  .profile h1 {
+    color: #f7f8fb !important;
+    background: linear-gradient(100deg, #ffffff 0%, #f3dfaa 48%, #ffffff 100%) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: none !important;
+  }
+
+  .intro {
+    color: #aeb8c6 !important;
+  }
+
+  .roles,
+  .link-card,
+  .notice,
+  .modal,
+  .modal-box,
+  .modal-header,
+  .guide-item,
+  .image-lightbox {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .roles::after,
+  .link-card::after,
+  .guide-item::after,
+  .modal-box::before {
+    display: none !important;
+    animation: none !important;
   }
 }
   </style>
