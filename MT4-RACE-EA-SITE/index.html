@@ -1629,6 +1629,90 @@
     animation: none !important;
   }
 }
+  
+    /* MT4와 GOLD RACE EA 간단 설명 카드 */
+    .roles {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 12px !important;
+      padding: 12px !important;
+    }
+
+    .role {
+      min-height: 150px;
+      padding: 20px !important;
+      border: 1px solid rgba(255, 255, 255, 0.07) !important;
+      border-radius: 17px !important;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.045),
+          rgba(255, 255, 255, 0.015)
+        ) !important;
+      text-align: left !important;
+    }
+
+    .role + .role,
+    .role:nth-child(even),
+    .role:nth-child(n + 3) {
+      border-left: 1px solid rgba(255, 255, 255, 0.07) !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.07) !important;
+    }
+
+    .role::after {
+      right: 20px !important;
+      bottom: 18px !important;
+      left: auto !important;
+      width: 46px !important;
+      transform: none !important;
+    }
+
+    .role-label {
+      display: inline-flex !important;
+      margin: 0 0 10px !important;
+      color: var(--gold-light) !important;
+      font-size: 8px !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.8px !important;
+    }
+
+    .role strong {
+      margin-bottom: 9px;
+      font-size: 17px !important;
+      line-height: 1.35 !important;
+      letter-spacing: -0.3px !important;
+    }
+
+    .role p {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      color: #8f9bab;
+      font-size: 11px;
+      line-height: 1.75;
+      text-wrap: pretty;
+    }
+
+    @media (max-width: 619px) {
+      .roles {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+        padding: 9px !important;
+      }
+
+      .role {
+        min-height: 0;
+        padding: 18px !important;
+      }
+
+      .role strong {
+        font-size: 16px !important;
+      }
+
+      .role p {
+        font-size: 10px;
+      }
+    }
+
   </style>
 </head>
 
@@ -1655,25 +1739,23 @@
       </p>
     </section>
 
-    <section class="roles reveal" style="--delay: 80ms;" aria-label="주요 안내 영역">
+    <section class="roles reveal" style="--delay: 80ms;" aria-label="MT4와 GOLD RACE EA 설명">
       <div class="role">
-        <strong>MT4</strong>
-        <span>TRADING PLATFORM</span>
+        <span class="role-label">TRADING PLATFORM</span>
+        <strong>MT4란?</strong>
+        <p>
+          시세와 차트를 확인하고 주문 실행, 계좌 및 포지션 관리를 지원하는
+          외환·CFD 거래 플랫폼입니다.
+        </p>
       </div>
 
       <div class="role">
-        <strong>GOLD RACE</strong>
-        <span>EA PROGRAM</span>
-      </div>
-
-      <div class="role">
-        <strong>GUIDE</strong>
-        <span>USER MANUAL</span>
-      </div>
-
-      <div class="role">
-        <strong>REMOTE</strong>
-        <span>CONNECTION GUIDE</span>
+        <span class="role-label">EA PROGRAM</span>
+        <strong>GOLD RACE EA란?</strong>
+        <p>
+          MT4에서 특정 조건에 따라 주문 실행, 추가진입,
+          포지션 관리와 청산을 지원하는 EA 프로그램입니다.
+        </p>
       </div>
     </section>
 
@@ -1818,8 +1900,8 @@
 
           <div class="guide-content">
             <span class="guide-tag">시드 가이드</span>
-            <strong>첫진입 랏수별 계산 비교</strong>
-            <span>첫진입 랏수별 누적 주문량과 가정 손익을 비교합니다.</span>
+            <strong>첫 진입 랏수별 계산 비교</strong>
+            <span>첫 진입 랏수별 누적 주문량과 가정 손익을 비교합니다.</span>
           </div>
 
           <div class="guide-arrow">›</div>
