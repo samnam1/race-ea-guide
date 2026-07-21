@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>첫진입 랏수별 설정 비교 참고자료 | MT4 & GOLD RACE</title>
+
+  <meta
+    name="description"
+    content="GOLD RACE의 특정 가정 조건에 따른 누적 랏수, 가정 청산 수익금 및 손실 시뮬레이션 비교 참고자료"
+  >
+
+  <style>
+    :root {
+      --bg: #080c12;
+      --surface: #111824;
+      --surface-2: #17202d;
+      --surface-3: #1c2635;
+      --line: rgba(255, 255, 255, 0.09);
+      --line-gold: rgba(213, 177, 99, 0.38);
+      --gold: #d5b163;
+      --gold-light: #ebcf8c;
+      --text: #f5f7fb;
+      --muted: #9ca6b5;
+      --muted-2: #737e8e;
+      --danger: #ff9f9f;
+      --danger-bg: rgba(255, 112, 112, 0.08);
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 50% -12%, #263144 0%, #111823 38%, var(--bg) 78%);
+      color: var(--text);
+      font-family:
+        Arial,
+        "Noto Sans KR",
+        sans-serif;
+    }
+
+    button,
+    select,
+    a {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .container {
+      width: min(100% - 28px, 1180px);
+      margin: 0 auto;
+      padding: 28px 0 70px;
+    }
+
+    .back-button {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 28px;
+      padding: 11px 15px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.035);
+      color: var(--gold-light);
+      font-size: 13px;
+      font-weight: 800;
+      text-decoration: none;
+      transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+    }
+
+    .back-button:hover {
+      transform: translateX(-3px);
+      background: rgba(213, 177, 99, 0.09);
+    }
+
+    .hero {
+      padding: 32px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(213, 177, 99, 0.12),
+          rgba(255, 255, 255, 0.025)
+        );
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 6px 10px;
+      border: 1px solid var(--line-gold);
+      border-radius: 999px;
+      background: rgba(213, 177, 99, 0.08);
+      color: var(--gold-light);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.6px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(30px, 6vw, 48px);
+      letter-spacing: -1.6px;
+    }
+
+    .hero-description {
+      max-width: 760px;
+      margin: 15px 0 0;
+      color: #bac2ce;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .condition-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 22px;
+    }
+
+    .condition {
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: rgba(8, 12, 18, 0.38);
+      color: #d6dbe3;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .guide-message {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-left: 3px solid var(--gold);
+      border-radius: 0 14px 14px 0;
+      background: rgba(213, 177, 99, 0.07);
+      color: #bbc3cf;
+      font-size: 12px;
+      line-height: 1.75;
+    }
+
+    .guide-message strong {
+      color: var(--gold-light);
+    }
+
+    .selector-panel {
+      margin-top: 20px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(17, 24, 36, 0.92);
+    }
+
+    .selector-head {
+      display: flex;
+      gap: 16px;
+      align-items: end;
+      justify-content: space-between;
+    }
+
+    .selector-copy strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 16px;
+    }
+
+    .selector-copy span {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .lot-select-wrap {
+      min-width: 170px;
+    }
+
+    .lot-select-wrap label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--gold-light);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    #lotSelect {
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid var(--line-gold);
+      border-radius: 12px;
+      outline: none;
+      background: var(--surface-3);
+      color: var(--text);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .summary-card {
+      min-width: 0;
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.045),
+          rgba(255, 255, 255, 0.015)
+        );
+    }
+
+    .summary-card span {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted-2);
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .summary-card strong {
+      display: block;
+      color: var(--text);
+      font-size: clamp(17px, 2.4vw, 22px);
+      line-height: 1.35;
+      word-break: keep-all;
+    }
+
+    .summary-card.gold strong {
+      color: var(--gold-light);
+    }
+
+    .summary-card.danger strong {
+      color: var(--danger);
+    }
+
+    .section-card {
+      margin-top: 20px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(14, 20, 30, 0.95);
+      box-shadow: 0 18px 55px rgba(0, 0, 0, 0.24);
+    }
+
+    .section-header {
+      padding: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .section-header p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.65;
+    }
+
+    .loss-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 13px;
+      padding: 20px;
+    }
+
+    .loss-card {
+      display: grid;
+      grid-template-columns: 70px minmax(0, 1fr);
+      gap: 14px;
+      align-items: center;
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: rgba(255, 255, 255, 0.025);
+      transition:
+        transform 0.2s ease,
+        border-color 0.2s ease;
+    }
+
+    .loss-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--line-gold);
+    }
+
+    .loss-card.selected {
+      border-color: rgba(213, 177, 99, 0.72);
+      background:
+        linear-gradient(
+          135deg,
+          rgba(213, 177, 99, 0.13),
+          rgba(255, 255, 255, 0.025)
+        );
+    }
+
+    .loss-lot {
+      display: grid;
+      width: 70px;
+      height: 70px;
+      place-items: center;
+      border-radius: 19px;
+      background:
+        linear-gradient(
+          145deg,
+          var(--gold-light),
+          #a87e31
+        );
+      color: #0b0f15;
+      font-size: 17px;
+      font-weight: 900;
+      box-shadow: 0 10px 24px rgba(213, 177, 99, 0.16);
+    }
+
+    .loss-copy h3 {
+      margin: 0 0 10px;
+      font-size: 14px;
+    }
+
+    .loss-row {
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-top: 1px dashed rgba(255, 255, 255, 0.07);
+    }
+
+    .loss-row:first-of-type {
+      border-top: 0;
+    }
+
+    .loss-row span {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .loss-row strong {
+      color: var(--danger);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      scrollbar-width: thin;
+    }
+
+    .tab-button {
+      flex: 0 0 auto;
+      padding: 10px 13px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.025);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+      transition:
+        color 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
+    }
+
+    .tab-button.active {
+      border-color: var(--line-gold);
+      background: rgba(213, 177, 99, 0.13);
+      color: var(--gold-light);
+    }
+
+    .tab-panel {
+      display: none;
+      padding: 0 18px 20px;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .table-note {
+      margin: 16px 0 12px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.6;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #0c121b;
+    }
+
+    table {
+      width: max-content;
+      min-width: 100%;
+      border-collapse: collapse;
+      font-variant-numeric: tabular-nums;
+    }
+
+    th,
+    td {
+      min-width: 76px;
+      padding: 12px 10px;
+      border-right: 1px solid rgba(255, 255, 255, 0.055);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+      color: #d9dee6;
+      font-size: 10px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #1a2432;
+      color: var(--gold-light);
+      font-weight: 900;
+    }
+
+    th:first-child,
+    td:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      min-width: 84px;
+      background: #141d29;
+      color: var(--gold-light);
+      font-weight: 900;
+    }
+
+    th:first-child {
+      z-index: 3;
+      background: #1d2938;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    td:last-child,
+    th:last-child {
+      border-right: 0;
+    }
+
+    tbody tr {
+      transition: background 0.15s ease;
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    tbody tr.selected-row {
+      background: rgba(213, 177, 99, 0.11);
+    }
+
+    .total-cell {
+      color: var(--gold-light);
+      font-weight: 900;
+    }
+
+    .risk-box {
+      margin-top: 20px;
+      padding: 20px;
+      border: 1px solid rgba(255, 123, 123, 0.18);
+      border-radius: 18px;
+      background: var(--danger-bg);
+    }
+
+    .risk-box h2 {
+      margin: 0 0 10px;
+      color: #ffc0c0;
+      font-size: 15px;
+    }
+
+    .risk-box p {
+      margin: 0;
+      color: #ad9fa5;
+      font-size: 11px;
+      line-height: 1.75;
+    }
+
+    footer {
+      padding-top: 28px;
+      color: #606b7a;
+      font-size: 10px;
+      text-align: center;
+    }
+
+    @media (max-width: 840px) {
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .loss-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .container {
+        width: min(100% - 20px, 1180px);
+        padding-top: 18px;
+      }
+
+      .hero {
+        padding: 23px 19px;
+        border-radius: 20px;
+      }
+
+      .selector-panel {
+        padding: 18px;
+      }
+
+      .selector-head {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .lot-select-wrap {
+        min-width: 0;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .loss-grid {
+        padding: 14px;
+      }
+
+      .loss-card {
+        grid-template-columns: 58px minmax(0, 1fr);
+        padding: 14px;
+      }
+
+      .loss-lot {
+        width: 58px;
+        height: 58px;
+        border-radius: 16px;
+        font-size: 14px;
+      }
+
+      .section-header {
+        padding: 18px;
+      }
+
+      .tab-panel {
+        padding-right: 12px;
+        padding-left: 12px;
+      }
+
+      th,
+      td {
+        min-width: 70px;
+        padding: 11px 8px;
+        font-size: 9px;
+      }
+    }
+  
+    /* 자연스러운 한글 줄바꿈 */
+    body,
+    h1,
+    h2,
+    h3,
+    p,
+    span,
+    strong,
+    small,
+    li,
+    a,
+    button,
+    label {
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      line-break: strict;
+      hyphens: none;
+    }
+
+    h1,
+    h2,
+    h3 {
+      text-wrap: balance;
+    }
+
+    p,
+    .hero-description,
+    .guide-message,
+    .selector-copy span,
+    .section-header p,
+    .table-note,
+    .risk-box p,
+    .scope-notice p {
+      text-wrap: pretty;
+    }
+
+    .reference-badge {
+      display: inline-flex;
+      align-items: center;
+      margin-left: 8px;
+      padding: 6px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.045);
+      color: #cbd2dc;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .scope-notice {
+      margin-top: 20px;
+      padding: 18px 20px;
+      border: 1px solid rgba(213, 177, 99, 0.28);
+      border-radius: 18px;
+      background: rgba(213, 177, 99, 0.07);
+    }
+
+    .scope-notice strong {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--gold-light);
+      font-size: 13px;
+    }
+
+    .scope-notice p {
+      margin: 0;
+      color: #adb7c5;
+      font-size: 11px;
+      line-height: 1.75;
+    }
+
+    /* 페이지에 이미지가 추가되는 경우 클릭 확대 기능이 자동 적용됩니다. */
+    main img {
+      cursor: zoom-in;
+    }
+
+    .image-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(5px);
+    }
+
+    .image-lightbox.open {
+      display: flex;
+    }
+
+    .image-lightbox img {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: min(96vw, 1600px);
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 26px 80px rgba(0, 0, 0, 0.58);
+      cursor: zoom-out;
+    }
+
+    .image-lightbox-close {
+      position: fixed;
+      top: 18px;
+      right: 22px;
+      width: 46px;
+      height: 46px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 50%;
+      color: #fff;
+      background: rgba(15, 23, 32, 0.88);
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    body.lightbox-open {
+      overflow: hidden;
+    }
+
+    @media (max-width: 560px) {
+      .reference-badge {
+        margin-top: 8px;
+        margin-left: 0;
+      }
+
+      .image-lightbox {
+        padding: 14px;
+      }
+
+      .image-lightbox img {
+        max-width: 96vw;
+        max-height: 84vh;
+      }
+
+      .image-lightbox-close {
+        top: 12px;
+        right: 12px;
+      }
+    }
+
+  
+    @media (min-width: 900px) {
+      .hero-description {
+        max-width: none;
+        white-space: nowrap;
+      }
+    }
+
+  
+/* MT4 & GOLD RACE 메인 페이지 통일 디자인 */
+:root{
+  --gr-bg:#060a10;
+  --gr-gold:#d8b66f;
+  --gr-gold-light:#f0d596;
+  --gr-mouse-x:50%;
+  --gr-mouse-y:18%;
+}
+body{
+  position:relative;
+  min-height:100vh;
+  overflow-x:hidden;
+  background:
+    radial-gradient(circle at var(--gr-mouse-x) var(--gr-mouse-y),
+      rgba(216,182,111,.075),transparent 31%),
+    linear-gradient(180deg,#09111b 0%,var(--gr-bg) 52%,#05080d 100%)!important;
+}
+body::before{
+  position:fixed;z-index:-5;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+  background-size:44px 44px;
+  -webkit-mask-image:linear-gradient(to bottom,#000,transparent 84%);
+  mask-image:linear-gradient(to bottom,#000,transparent 84%);
+  content:"";pointer-events:none;
+}
+body::after{
+  position:fixed;z-index:-3;inset:0;
+  background:radial-gradient(circle at center,transparent 34%,rgba(0,0,0,.42) 100%);
+  content:"";pointer-events:none;
+}
+.gr-ambient{position:fixed;z-index:-4;inset:0;overflow:hidden;pointer-events:none}
+.gr-orb{position:absolute;border-radius:50%;filter:blur(24px);opacity:.38}
+.gr-orb-one{
+  top:-190px;left:-150px;width:440px;height:440px;
+  background:radial-gradient(circle,rgba(210,171,87,.55),transparent 67%);
+  animation:grDriftOne 14s ease-in-out infinite alternate;
+}
+.gr-orb-two{
+  top:31%;right:-220px;width:540px;height:540px;
+  background:radial-gradient(circle,rgba(61,109,166,.30),transparent 69%);
+  animation:grDriftTwo 17s ease-in-out infinite alternate;
+}
+.gr-orb-three{
+  bottom:-280px;left:20%;width:590px;height:590px;
+  background:radial-gradient(circle,rgba(155,115,48,.21),transparent 70%);
+  animation:grDriftThree 19s ease-in-out infinite alternate;
+}
+.gr-scroll-progress{
+  position:fixed;z-index:10000;top:0;left:0;width:0;height:2px;
+  background:linear-gradient(90deg,#8e6729,var(--gr-gold-light),#fff2c4);
+  box-shadow:0 0 14px rgba(240,213,150,.8);pointer-events:none;
+}
+.hero{
+  position:relative;overflow:hidden;isolation:isolate;
+  border-color:rgba(216,182,111,.20)!important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(216,182,111,.13),transparent 46%),
+    linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.015))!important;
+  box-shadow:0 28px 85px rgba(0,0,0,.43),0 0 0 1px rgba(255,255,255,.018)!important;
+}
+.hero::before{
+  position:absolute;z-index:-1;inset:-1px;border-radius:inherit;
+  background:conic-gradient(from 180deg,transparent,rgba(216,182,111,.14),
+    transparent,rgba(91,129,173,.13),transparent);
+  content:"";opacity:.85;animation:grSpin 19s linear infinite;pointer-events:none;
+}
+.hero::after{
+  position:absolute;top:-125%;left:-25%;width:48%;height:340%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.055),transparent);
+  content:"";transform:rotate(18deg);animation:grSweep 8.5s ease-in-out infinite;
+  pointer-events:none;
+}
+.hero>*{position:relative;z-index:1}
+.hero h1{
+  color:transparent!important;
+  background:linear-gradient(100deg,#fff 0%,#f7e8bd 34%,var(--gr-gold-light) 51%,#fff 78%,#d9e6f4 100%);
+  background-size:220% auto;background-clip:text;-webkit-background-clip:text;
+  animation:grTitle 8s linear infinite;
+}
+.eyebrow{
+  border-color:rgba(216,182,111,.34)!important;
+  background:rgba(216,182,111,.085)!important;
+  color:var(--gr-gold-light)!important;
+  box-shadow:0 0 20px rgba(216,182,111,.06);
+}
+.section,.section-card,.selector-panel,.scope-notice,.notice,.risk-box,
+.info-block,.safety-hero,.device-guide-menu,.bottom-device-nav,.guide-menu,
+.bottom-guide-nav{
+  border-color:rgba(255,255,255,.085)!important;
+  background:linear-gradient(145deg,rgba(17,25,37,.94),rgba(10,15,23,.96))!important;
+  box-shadow:0 22px 58px rgba(0,0,0,.29),inset 0 1px 0 rgba(255,255,255,.035)!important;
+  backdrop-filter:blur(12px);
+}
+.summary-card,.step-card,.overview-card,.flow-card,.info-card,.term-card,
+.compare-card,.loss-card,.hero-card,.definition-card,.safety-card,.screen-tab,
+.tab,.guide-jump,.seed-guide-link,.primary-btn{
+  position:relative;overflow:hidden;
+  transition:transform .28s cubic-bezier(.2,.8,.2,1),border-color .28s ease,
+    background .28s ease,box-shadow .28s ease!important;
+  will-change:transform;
+}
+.summary-card::after,.step-card::after,.overview-card::after,.flow-card::after,
+.info-card::after,.term-card::after,.compare-card::after,.loss-card::after,
+.hero-card::after,.definition-card::after,.safety-card::after,.screen-tab::after,
+.tab::after,.guide-jump::after,.seed-guide-link::after,.primary-btn::after{
+  position:absolute;top:-115%;left:-35%;width:32%;height:330%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);
+  content:"";transform:rotate(18deg) translateX(-185%);transition:transform .85s ease;
+  pointer-events:none;
+}
+@media(hover:hover) and (pointer:fine){
+  .summary-card:hover,.step-card:hover,.overview-card:hover,.flow-card:hover,
+  .info-card:hover,.term-card:hover,.compare-card:hover,.loss-card:hover,
+  .hero-card:hover,.definition-card:hover,.safety-card:hover,.screen-tab:hover,
+  .tab:hover,.guide-jump:hover,.seed-guide-link:hover,.primary-btn:hover{
+    transform:translateY(-5px) scale(1.006);
+    border-color:rgba(216,182,111,.43)!important;
+    box-shadow:0 24px 52px rgba(0,0,0,.30),0 0 30px rgba(216,182,111,.07),
+      inset 0 1px 0 rgba(255,255,255,.055)!important;
+  }
+  .summary-card:hover::after,.step-card:hover::after,.overview-card:hover::after,
+  .flow-card:hover::after,.info-card:hover::after,.term-card:hover::after,
+  .compare-card:hover::after,.loss-card:hover::after,.hero-card:hover::after,
+  .definition-card:hover::after,.safety-card:hover::after,.screen-tab:hover::after,
+  .tab:hover::after,.guide-jump:hover::after,.seed-guide-link:hover::after,
+  .primary-btn:hover::after{transform:rotate(18deg) translateX(450%)}
+}
+.screen-tab.active,.tab.active,.guide-jump.active{
+  border-color:rgba(216,182,111,.48)!important;
+  background:linear-gradient(145deg,rgba(216,182,111,.15),rgba(255,255,255,.028))!important;
+  color:var(--gr-gold-light)!important;
+}
+.step-no,.step-number,.flow-number,.loss-lot,.seed-guide-icon,
+.device-guide-menu .screen-tab.active b,.bottom-device-nav .screen-tab.active b{
+  background:linear-gradient(145deg,var(--gr-gold-light),#9d742e)!important;
+  box-shadow:0 12px 28px rgba(216,182,111,.16),inset 0 1px 0 rgba(255,255,255,.4)!important;
+}
+.image-stage,.shot,.sub-shot,.table-wrap{
+  border-color:rgba(255,255,255,.085)!important;
+  box-shadow:0 18px 42px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+.gr-js .gr-reveal{
+  opacity:0;transform:translateY(26px) scale(.982);
+  transition:opacity .75s ease,transform .85s cubic-bezier(.16,1,.3,1);
+}
+.gr-js .gr-reveal.gr-visible{opacity:1;transform:translateY(0) scale(1)}
+@keyframes grSpin{to{transform:rotate(360deg)}}
+@keyframes grTitle{to{background-position:-220% center}}
+@keyframes grSweep{
+  0%,34%{transform:rotate(18deg) translateX(-190%)}
+  68%,100%{transform:rotate(18deg) translateX(390%)}
+}
+@keyframes grDriftOne{
+  from{transform:translate3d(-20px,-15px,0) scale(.92)}
+  to{transform:translate3d(95px,80px,0) scale(1.12)}
+}
+@keyframes grDriftTwo{
+  from{transform:translate3d(20px,-25px,0) scale(.9)}
+  to{transform:translate3d(-120px,100px,0) scale(1.1)}
+}
+@keyframes grDriftThree{
+  from{transform:translate3d(-45px,30px,0) scale(.9)}
+  to{transform:translate3d(120px,-80px,0) scale(1.13)}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .gr-js .gr-reveal{opacity:1;transform:none}
+}
+
+
+
+/* 카드 설명 영역의 움직임 제거 */
+.summary-card,
+.step-card,
+.overview-card,
+.flow-card,
+.info-card,
+.term-card,
+.compare-card,
+.loss-card,
+.hero-card,
+.definition-card,
+.safety-card,
+.primary-btn,
+.seed-guide-link {
+  transform: none !important;
+  will-change: auto !important;
+}
+
+.summary-card:hover,
+.step-card:hover,
+.overview-card:hover,
+.flow-card:hover,
+.info-card:hover,
+.term-card:hover,
+.compare-card:hover,
+.loss-card:hover,
+.hero-card:hover,
+.definition-card:hover,
+.safety-card:hover,
+.primary-btn:hover,
+.seed-guide-link:hover {
+  transform: none !important;
+}
+
+.summary-card::after,
+.step-card::after,
+.overview-card::after,
+.flow-card::after,
+.info-card::after,
+.term-card::after,
+.compare-card::after,
+.loss-card::after,
+.hero-card::after,
+.definition-card::after,
+.safety-card::after,
+.primary-btn::after,
+.seed-guide-link::after {
+  display: none !important;
+}
+
+
+/* 계산표 세부 탭만 움직임 적용 */
+.tab-button {
+  transition:
+    transform .28s cubic-bezier(.2,.8,.2,1),
+    border-color .25s ease,
+    background .25s ease,
+    color .25s ease !important;
+  will-change: transform;
+}
+
+@media (hover:hover) and (pointer:fine) {
+  .tab-button:hover {
+    transform: translateY(-4px) scale(1.006);
+    border-color: rgba(216,182,111,.43);
+  }
+}
+
+
+    /* 랏수 선택 옆 최소 시드 참고금액 */
+    .selector-controls {
+      display: flex;
+      gap: 12px;
+      align-items: stretch;
+      justify-content: flex-end;
+    }
+
+    .minimum-seed-card {
+      min-width: 190px;
+      padding: 12px 15px;
+      border: 1px solid rgba(213, 177, 99, 0.42);
+      border-radius: 12px;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(213, 177, 99, 0.14),
+          rgba(255, 255, 255, 0.025)
+        );
+      box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .minimum-seed-card span {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--gold-light);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .minimum-seed-card strong {
+      display: block;
+      color: #ffffff;
+      font-size: 21px;
+      line-height: 1.25;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .minimum-seed-card small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 720px) {
+      .selector-controls {
+        width: 100%;
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .minimum-seed-card {
+        min-width: 0;
+      }
+    }
+
+</style>
+</head>
+
+<body>
+<div class="gr-ambient" aria-hidden="true">
+  <div class="gr-orb gr-orb-one"></div>
+  <div class="gr-orb gr-orb-two"></div>
+  <div class="gr-orb gr-orb-three"></div>
+</div>
+<div class="gr-scroll-progress" id="grScrollProgress" aria-hidden="true"></div>
+
+  <main class="container">
+
+    <a class="back-button" href="index.html">
+      ← 메인 화면으로 돌아가기
+    </a>
+
+    <section class="hero">
+      <span class="eyebrow">GOLD RACE · COMPARISON DATA</span><span class="reference-badge">일반 정보 · 권장 설정 아님</span>
+
+      <h1>첫진입 랏수별 설정 비교 참고자료</h1>
+
+      <p class="hero-description">
+        GOLD RACE의 첫진입 랏수별 누적 주문량과 가정 손익 수치를 비교하는 참고자료입니다.
+      </p>
+
+      <div class="condition-list">
+        <span class="condition">GOLD RACE</span>
+        <span class="condition">가정: 300포인트 간격</span>
+        <span class="condition">10회차·11회차 계산 예시</span>
+        <span class="condition">첫진입 0.01~0.10랏 비교</span>
+      </div>
+
+      <div class="guide-message">
+        <strong>본 자료는 설정값에 따른 수치 변화를 비교하기 위한 일반 정보이며, 특정 계좌에 대한 권장 설정이나 투자자문이 아닙니다.</strong>
+        첫진입 랏수는 이용자가 자신의 재무상황, 손실 감수능력, 거래 경험 및 브로커 거래조건을
+        독립적으로 검토하여 결정해야 합니다. 운영자는 개별 이용자의 적합성을 판단하거나 설정값을 지정하지 않습니다.
+      </div>
+    </section>
+
+
+    <section class="scope-notice" aria-label="자료 성격 안내">
+      <strong>자료 성격 안내</strong>
+      <p>
+        이 페이지는 모든 이용자에게 동일한 계산 기준을 보여 주는 설정 비교용 자료입니다.
+        이용자의 자산, 투자목적, 거래 경험 또는 손실 감수능력을 반영한 개별 추천이 아니며,
+        특정 랏수나 거래 실행을 권장하지 않습니다.
+      </p>
+    </section>
+
+    <section class="selector-panel">
+      <div class="selector-head">
+        <div class="selector-copy">
+          <strong>첫진입 랏수별 계산 비교</strong>
+          <span>
+            값을 선택하면 동일한 가정에 따른 누적 랏과 손실 시뮬레이션 수치가 표시됩니다.
+            선택 항목은 권장 설정을 의미하지 않습니다.
+          </span>
+        </div>
+
+        <div class="selector-controls">
+          <div class="lot-select-wrap">
+            <label for="lotSelect">비교할 첫진입 랏수</label>
+
+            <select id="lotSelect" aria-label="비교할 첫진입 랏수 선택">
+              <option value="0.01">0.01랏</option>
+              <option value="0.02">0.02랏</option>
+              <option value="0.03">0.03랏</option>
+              <option value="0.04">0.04랏</option>
+              <option value="0.05">0.05랏</option>
+              <option value="0.06">0.06랏</option>
+              <option value="0.07">0.07랏</option>
+              <option value="0.08">0.08랏</option>
+              <option value="0.09">0.09랏</option>
+              <option value="0.10">0.10랏</option>
+            </select>
+          </div>
+
+          <div class="minimum-seed-card" aria-live="polite">
+            <span>최소 시드 참고금액</span>
+            <strong id="minimumSeed">$1,500</strong>
+            <small>11회차 인근 손실 시뮬레이션 기준</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-grid">
+        <article class="summary-card gold">
+          <span>10회차 누적 랏 계산값</span>
+          <strong id="summary10Lot">1.79랏</strong>
+        </article>
+
+        <article class="summary-card gold">
+          <span>11회차 누적 랏 계산값</span>
+          <strong id="summary11Lot">2.72랏</strong>
+        </article>
+
+        <article class="summary-card danger">
+          <span>11회차 인근 손실 시뮬레이션</span>
+          <strong id="summaryNearLoss">-$1,500 ~ -$1,600</strong>
+        </article>
+
+        <article class="summary-card danger">
+          <span>11회차 이후 손실 시뮬레이션</span>
+          <strong id="summaryHoldLoss">약 -$2,000</strong>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-card">
+      <div class="section-header">
+        <h2>11회차 기준 손실 시뮬레이션 범위</h2>
+
+        <p>
+          표시 금액은 동일한 가정 조건에서 산출한 계산 예시입니다.
+          실제 손익은 브로커 시세, 스프레드, 수수료, 슬리피지, 주문 체결 여부,
+          레버리지 및 급격한 시장 변동에 따라 크게 달라지며 표시 범위를 초과할 수 있습니다.
+        </p>
+      </div>
+
+      <div class="loss-grid" id="lossGrid"></div>
+    </section>
+
+    <section class="section-card">
+      <div class="section-header">
+        <h2>GOLD RACE 계산 예시표</h2>
+
+        <p>
+          표는 좌우로 이동하여 확인할 수 있습니다.
+          선택한 첫진입 랏수의 행은 확인 편의를 위해 금색으로 표시되며, 권장 설정을 의미하지 않습니다.
+        </p>
+      </div>
+
+      <nav class="tabs" aria-label="GOLD RACE 상세표 선택">
+        <button class="tab-button active" type="button" data-tab="lot11">
+          11회차 랏수 계산
+        </button>
+
+        <button class="tab-button" type="button" data-tab="profit11">
+          11회차 청산 수익금 가정
+        </button>
+
+        <button class="tab-button" type="button" data-tab="lot10">
+          10회차 랏수 계산
+        </button>
+
+        <button class="tab-button" type="button" data-tab="profit10">
+          10회차 청산 수익금 가정
+        </button>
+      </nav>
+
+      <div class="tab-panel active" id="lot11">
+        <p class="table-note">
+          11회차까지 주문이 체결되었다고 가정한 회차별 랏수와 총 누적 랏 계산값입니다.
+        </p>
+
+        <div class="table-wrap" id="lot11Table"></div>
+      </div>
+
+      <div class="tab-panel" id="profit11">
+        <p class="table-note">
+          11회차까지 주문이 체결되었다고 가정한 단계별 청산 수익금 계산 예시이며, 실제 수익을 의미하거나 보장하지 않습니다.
+        </p>
+
+        <div class="table-wrap" id="profit11Table"></div>
+      </div>
+
+      <div class="tab-panel" id="lot10">
+        <p class="table-note">
+          10회차까지 주문이 체결되었다고 가정한 회차별 랏수와 총 누적 랏 계산값입니다.
+        </p>
+
+        <div class="table-wrap" id="lot10Table"></div>
+      </div>
+
+      <div class="tab-panel" id="profit10">
+        <p class="table-note">
+          10회차까지 주문이 체결되었다고 가정한 단계별 청산 수익금 계산 예시이며, 실제 수익을 의미하거나 보장하지 않습니다.
+        </p>
+
+        <div class="table-wrap" id="profit10Table"></div>
+      </div>
+    </section>
+
+    <section class="risk-box">
+      <h2>중요 고지 및 자료 이용 범위</h2>
+
+      <p>
+        본 자료는 프로그램 설정에 따른 수치 변화를 설명하는 일반적인 계산 예시로서,
+        특정 금융상품의 매수·매도, 계좌별 적정 랏수 또는 투자 실행을 권유하거나 자문하기 위한 자료가 아닙니다.
+        표시된 수익금과 손실 범위는 특정 가정에 따른 시뮬레이션이며 미래 성과를 보장하지 않습니다.
+        레버리지 거래는 시장 급변 시 예탁금 전액 손실을 포함한 큰 손실이 발생할 수 있습니다.
+        이용자는 브로커의 계약조건과 위험고지를 직접 확인하고 독립적으로 판단해야 합니다.
+        운영자는 계좌 운용·투자판단 대행, 원금 또는 수익 보장, 손실 보전, 입출금 대행을 제공하지 않습니다.
+      </p>
+    </section>
+
+    <footer>
+      MT4 &amp; GOLD RACE · SEED GUIDE © 2026
+    </footer>
+
+  </main>
+
+  <script>
+    const lot11 = {
+      "0.01": [0.01, 0.02, 0.03, 0.05, 0.08, 0.12, 0.18, 0.27, 0.41, 0.62, 0.93, 2.72],
+      "0.02": [0.02, 0.03, 0.05, 0.08, 0.12, 0.18, 0.27, 0.41, 0.62, 0.93, 1.40, 4.11],
+      "0.03": [0.03, 0.05, 0.08, 0.12, 0.18, 0.27, 0.41, 0.62, 0.93, 1.40, 2.10, 6.19],
+      "0.04": [0.04, 0.06, 0.09, 0.14, 0.21, 0.32, 0.48, 0.72, 1.08, 1.62, 2.43, 7.19],
+      "0.05": [0.05, 0.08, 0.12, 0.18, 0.27, 0.41, 0.62, 0.93, 1.40, 2.10, 3.15, 9.31],
+      "0.06": [0.06, 0.09, 0.14, 0.21, 0.32, 0.48, 0.72, 1.08, 1.62, 2.43, 3.65, 10.80],
+      "0.07": [0.07, 0.11, 0.17, 0.26, 0.39, 0.59, 0.89, 1.34, 2.01, 3.02, 4.53, 13.38],
+      "0.08": [0.08, 0.12, 0.18, 0.27, 0.41, 0.62, 0.93, 1.40, 2.10, 3.15, 4.73, 13.99],
+      "0.09": [0.09, 0.14, 0.21, 0.32, 0.48, 0.72, 1.08, 1.62, 2.43, 3.65, 5.48, 16.22],
+      "0.10": [0.10, 0.15, 0.23, 0.35, 0.53, 0.80, 1.20, 1.80, 2.70, 4.05, 6.08, 17.99]
+    };
+
+    const profit11 = {
+      "0.01": [3, 9, 18, 33, 57, 93, 147, 228, 351, 537, 816],
+      "0.02": [6, 15, 30, 54, 90, 144, 225, 348, 534, 813, 1233],
+      "0.03": [9, 24, 48, 84, 138, 219, 342, 528, 807, 1227, 1857],
+      "0.04": [12, 30, 57, 99, 162, 258, 402, 618, 942, 1428, 2157],
+      "0.05": [15, 39, 75, 129, 210, 333, 519, 798, 1218, 1848, 2793],
+      "0.06": [18, 45, 87, 150, 246, 390, 606, 930, 1416, 2145, 3240],
+      "0.07": [21, 54, 105, 183, 300, 477, 744, 1146, 1749, 2655, 4014],
+      "0.08": [24, 60, 114, 195, 318, 504, 783, 1203, 1833, 2778, 4197],
+      "0.09": [27, 69, 132, 228, 372, 588, 912, 1398, 2127, 3222, 4866],
+      "0.10": [30, 75, 144, 249, 408, 648, 1008, 1548, 2358, 3573, 5397]
+    };
+
+    const lot10 = {
+      "0.01": [0.01, 0.02, 0.03, 0.05, 0.08, 0.12, 0.18, 0.27, 0.41, 0.62, 1.79],
+      "0.02": [0.02, 0.03, 0.05, 0.08, 0.12, 0.18, 0.27, 0.41, 0.62, 0.93, 2.71],
+      "0.03": [0.03, 0.05, 0.08, 0.12, 0.18, 0.27, 0.41, 0.62, 0.93, 1.40, 4.09],
+      "0.04": [0.04, 0.06, 0.09, 0.14, 0.21, 0.32, 0.48, 0.72, 1.08, 1.62, 4.76],
+      "0.05": [0.05, 0.08, 0.12, 0.18, 0.27, 0.41, 0.62, 0.93, 1.40, 2.10, 6.16],
+      "0.06": [0.06, 0.09, 0.14, 0.21, 0.32, 0.48, 0.72, 1.08, 1.62, 2.43, 7.15],
+      "0.07": [0.07, 0.11, 0.17, 0.26, 0.39, 0.59, 0.89, 1.34, 2.01, 3.02, 8.85],
+      "0.08": [0.08, 0.12, 0.18, 0.27, 0.41, 0.62, 0.93, 1.40, 2.10, 3.15, 9.26],
+      "0.09": [0.09, 0.14, 0.21, 0.32, 0.48, 0.72, 1.08, 1.62, 2.43, 3.65, 10.74],
+      "0.10": [0.10, 0.15, 0.23, 0.35, 0.53, 0.80, 1.20, 1.80, 2.70, 4.05, 11.91]
+    };
+
+    const profit10 = Object.fromEntries(
+      Object.entries(profit11).map(([lot, values]) => [lot, values.slice(0, 10)])
+    );
+
+    const losses = {
+      "0.01": { near: "-$1,500 ~ -$1,600", hold: "약 -$2,000" },
+      "0.02": { near: "-$2,300 ~ -$2,400", hold: "약 -$3,000" },
+      "0.03": { near: "약 -$3,500", hold: "약 -$4,600" },
+      "0.04": { near: "약 -$4,100", hold: "약 -$5,400" },
+      "0.05": { near: "약 -$5,300", hold: "약 -$6,900" },
+      "0.06": { near: "약 -$6,200", hold: "약 -$8,000" },
+      "0.07": { near: "약 -$7,600", hold: "약 -$9,900" },
+      "0.08": { near: "약 -$8,000", hold: "약 -$10,400" },
+      "0.09": { near: "약 -$9,300", hold: "약 -$12,000" },
+      "0.10": { near: "약 -$10,300", hold: "약 -$13,300" }
+    };
+
+    const minimumSeeds = {
+      "0.01": 1500,
+      "0.02": 2300,
+      "0.03": 3500,
+      "0.04": 4100,
+      "0.05": 5300,
+      "0.06": 6200,
+      "0.07": 7600,
+      "0.08": 8000,
+      "0.09": 9300,
+      "0.10": 10300
+    };
+
+    const lotSelect = document.getElementById("lotSelect");
+    const lossGrid = document.getElementById("lossGrid");
+
+    function currency(value) {
+      return "$" + Number(value).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function lot(value) {
+      return Number(value).toFixed(2);
+    }
+
+    function buildTable({
+      targetId,
+      data,
+      rounds,
+      hasTotal = false,
+      type = "lot"
+    }) {
+      const target = document.getElementById(targetId);
+
+      const headers = [
+        "첫진입",
+        ...Array.from({ length: rounds }, (_, index) => `${index + 1}회`)
+      ];
+
+      if (hasTotal) {
+        headers.push("누적랏");
+      }
+
+      const headerHtml = headers
+        .map((header) => `<th>${header}</th>`)
+        .join("");
+
+      const rowsHtml = Object.entries(data)
+        .map(([firstLot, values]) => {
+          const cells = values
+            .map((value, index) => {
+              const isTotal = hasTotal && index === values.length - 1;
+              const cellClass = isTotal ? ' class="total-cell"' : "";
+              const formatted = type === "profit" ? currency(value) : lot(value);
+
+              return `<td${cellClass}>${formatted}</td>`;
+            })
+            .join("");
+
+          return `
+            <tr data-lot="${firstLot}">
+              <td>${firstLot}</td>
+              ${cells}
+            </tr>
+          `;
+        })
+        .join("");
+
+      target.innerHTML = `
+        <table>
+          <thead>
+            <tr>${headerHtml}</tr>
+          </thead>
+          <tbody>${rowsHtml}</tbody>
+        </table>
+      `;
+    }
+
+    function buildLossCards() {
+      lossGrid.innerHTML = Object.entries(losses)
+        .map(([firstLot, values]) => `
+          <article class="loss-card" data-lot="${firstLot}">
+            <div class="loss-lot">${firstLot}</div>
+
+            <div class="loss-copy">
+              <h3>첫진입 ${firstLot}랏</h3>
+
+              <div class="loss-row">
+                <span>11회차 인근 계산값</span>
+                <strong>${values.near}</strong>
+              </div>
+
+              <div class="loss-row">
+                <span>11회차 이후 계산값</span>
+                <strong>${values.hold}</strong>
+              </div>
+            </div>
+          </article>
+        `)
+        .join("");
+    }
+
+    function updateSelection(selectedLot) {
+      document.getElementById("minimumSeed").textContent =
+        "$" + minimumSeeds[selectedLot].toLocaleString("en-US");
+
+      document.getElementById("summary10Lot").textContent =
+        `${lot10[selectedLot][lot10[selectedLot].length - 1].toFixed(2)}랏`;
+
+      document.getElementById("summary11Lot").textContent =
+        `${lot11[selectedLot][lot11[selectedLot].length - 1].toFixed(2)}랏`;
+
+      document.getElementById("summaryNearLoss").textContent =
+        losses[selectedLot].near;
+
+      document.getElementById("summaryHoldLoss").textContent =
+        losses[selectedLot].hold;
+
+      document
+        .querySelectorAll(".loss-card")
+        .forEach((card) => {
+          card.classList.toggle(
+            "selected",
+            card.dataset.lot === selectedLot
+          );
+        });
+
+      document
+        .querySelectorAll("tbody tr")
+        .forEach((row) => {
+          row.classList.toggle(
+            "selected-row",
+            row.dataset.lot === selectedLot
+          );
+        });
+    }
+
+    buildLossCards();
+
+    buildTable({
+      targetId: "lot11Table",
+      data: lot11,
+      rounds: 11,
+      hasTotal: true,
+      type: "lot"
+    });
+
+    buildTable({
+      targetId: "profit11Table",
+      data: profit11,
+      rounds: 11,
+      type: "profit"
+    });
+
+    buildTable({
+      targetId: "lot10Table",
+      data: lot10,
+      rounds: 10,
+      hasTotal: true,
+      type: "lot"
+    });
+
+    buildTable({
+      targetId: "profit10Table",
+      data: profit10,
+      rounds: 10,
+      type: "profit"
+    });
+
+    lotSelect.addEventListener("change", (event) => {
+      updateSelection(event.target.value);
+    });
+
+    document.querySelectorAll(".tab-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        document
+          .querySelectorAll(".tab-button")
+          .forEach((item) => item.classList.remove("active"));
+
+        document
+          .querySelectorAll(".tab-panel")
+          .forEach((panel) => panel.classList.remove("active"));
+
+        button.classList.add("active");
+
+        document
+          .getElementById(button.dataset.tab)
+          .classList.add("active");
+      });
+    });
+
+    updateSelection(lotSelect.value);
+  </script>
+
+  <div class="image-lightbox" id="imageLightbox" role="dialog" aria-modal="true" aria-label="이미지 확대 보기">
+    <button class="image-lightbox-close" id="imageLightboxClose" type="button" aria-label="확대 이미지 닫기">×</button>
+    <img id="imageLightboxView" src="" alt="">
+  </div>
+
+  <script>
+    (function () {
+      const lightbox = document.getElementById("imageLightbox");
+      const lightboxImage = document.getElementById("imageLightboxView");
+      const closeButton = document.getElementById("imageLightboxClose");
+      const guideImages = document.querySelectorAll("main img");
+
+      function openLightbox(image) {
+        lightboxImage.src = image.currentSrc || image.src;
+        lightboxImage.alt = image.alt || "확대 이미지";
+        lightbox.classList.add("open");
+        document.body.classList.add("lightbox-open");
+        closeButton.focus();
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove("open");
+        document.body.classList.remove("lightbox-open");
+        lightboxImage.src = "";
+      }
+
+      guideImages.forEach((image) => {
+        image.setAttribute("tabindex", "0");
+        image.setAttribute("role", "button");
+        image.setAttribute("aria-label", (image.alt || "이미지") + " 크게 보기");
+
+        image.addEventListener("click", () => openLightbox(image));
+        image.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openLightbox(image);
+          }
+        });
+      });
+
+      closeButton.addEventListener("click", closeLightbox);
+      lightboxImage.addEventListener("click", closeLightbox);
+      lightbox.addEventListener("click", (event) => {
+        if (event.target === lightbox) closeLightbox();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && lightbox.classList.contains("open")) {
+          closeLightbox();
+        }
+      });
+    })();
+  </script>
+
+
+<script>
+(function(){
+  document.documentElement.classList.add("gr-js");
+  const root=document.documentElement;
+  const progress=document.getElementById("grScrollProgress");
+  const reduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function update(){
+    const max=document.documentElement.scrollHeight-window.innerHeight;
+    if(progress) progress.style.width=(max>0?Math.min(100,Math.max(0,window.scrollY/max*100)):0)+"%";
+  }
+  update();
+  window.addEventListener("scroll",update,{passive:true});
+  window.addEventListener("resize",update);
+  if(!reduced&&window.matchMedia("(pointer: fine)").matches){
+    window.addEventListener("pointermove",function(e){
+      root.style.setProperty("--gr-mouse-x",e.clientX/window.innerWidth*100+"%");
+      root.style.setProperty("--gr-mouse-y",e.clientY/window.innerHeight*100+"%");
+    },{passive:true});
+  }
+  const targets=document.querySelectorAll(
+    ".hero,.summary-grid,.section,.section-card,.selector-panel,.scope-notice,"+
+    ".notice,.risk-box,.info-block,.safety-hero,.device-guide-menu,"+
+    ".bottom-device-nav,.guide-menu,.bottom-guide-nav"
+  );
+  targets.forEach(el=>el.classList.add("gr-reveal"));
+  if(!reduced&&"IntersectionObserver" in window){
+    const observer=new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add("gr-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },{threshold:.08,rootMargin:"0px 0px -20px 0px"});
+    targets.forEach(el=>observer.observe(el));
+  }else{
+    targets.forEach(el=>el.classList.add("gr-visible"));
+  }
+})();
+</script>
+
+</body>
+</html>
+/* iPhone Safari 배경 밝아짐 방지 */
+@supports (-webkit-touch-callout: none) {
+  body {
+    background:
+      radial-gradient(
+        circle at 50% 0%,
+        rgba(216, 182, 111, 0.07),
+        transparent 34%
+      ),
+      linear-gradient(
+        180deg,
+        #09111b 0%,
+        #060a10 55%,
+        #05080d 100%
+      ) !important;
+  }
+
+  .gr-orb {
+    display: none;
+  }
+
+  body::before {
+    opacity: 0.35;
+  }
+
+  body::after {
+    background:
+      radial-gradient(
+        circle at center,
+        transparent 35%,
+        rgba(0, 0, 0, 0.28) 100%
+      );
+  }
+
+  .hero,
+  .section,
+  .section-card,
+  .selector-panel,
+  .scope-notice,
+  .risk-box {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .hero::after {
+    opacity: 0.35;
+  }
+}
