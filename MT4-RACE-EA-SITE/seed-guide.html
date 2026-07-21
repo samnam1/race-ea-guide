@@ -1045,6 +1045,88 @@ body::after{
     }
 
 </style>
+
+<style>
+  /* iPhone Safari 배경 밝아짐 방지 */
+  @supports (-webkit-touch-callout: none) {
+    body {
+      background:
+        radial-gradient(
+          circle at 50% 0%,
+          rgba(216, 182, 111, 0.055),
+          transparent 32%
+        ),
+        linear-gradient(
+          180deg,
+          #09111b 0%,
+          #060a10 55%,
+          #05080d 100%
+        ) !important;
+    }
+
+    .ambient,
+    .gr-ambient,
+    .orb,
+    .gr-orb {
+      display: none !important;
+    }
+
+    body::before {
+      opacity: 0.2 !important;
+    }
+
+    body::after {
+      background:
+        radial-gradient(
+          circle at center,
+          transparent 38%,
+          rgba(0, 0, 0, 0.34) 100%
+        ) !important;
+    }
+
+    .hero,
+    .profile,
+    .roles,
+    .link-card,
+    .section,
+    .section-card,
+    .selector-panel,
+    .scope-notice,
+    .notice,
+    .risk-box,
+    .info-block,
+    .safety-hero,
+    .device-guide-menu,
+    .bottom-device-nav,
+    .guide-menu,
+    .bottom-guide-nav,
+    .modal,
+    .modal-box,
+    .modal-header,
+    .guide-item,
+    .image-lightbox {
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+    }
+
+    .hero::before,
+    .profile::before,
+    .modal-box::before {
+      opacity: 0.18 !important;
+      animation: none !important;
+    }
+
+    .hero::after,
+    .profile::after,
+    .roles::after,
+    .link-card::after,
+    .guide-item::after {
+      display: none !important;
+      animation: none !important;
+    }
+  }
+</style>
+
 </head>
 
 <body>
@@ -1598,51 +1680,3 @@ body::after{
 
 </body>
 </html>
-/* iPhone Safari 배경 밝아짐 방지 */
-@supports (-webkit-touch-callout: none) {
-  body {
-    background:
-      radial-gradient(
-        circle at 50% 0%,
-        rgba(216, 182, 111, 0.07),
-        transparent 34%
-      ),
-      linear-gradient(
-        180deg,
-        #09111b 0%,
-        #060a10 55%,
-        #05080d 100%
-      ) !important;
-  }
-
-  .gr-orb {
-    display: none;
-  }
-
-  body::before {
-    opacity: 0.35;
-  }
-
-  body::after {
-    background:
-      radial-gradient(
-        circle at center,
-        transparent 35%,
-        rgba(0, 0, 0, 0.28) 100%
-      );
-  }
-
-  .hero,
-  .section,
-  .section-card,
-  .selector-panel,
-  .scope-notice,
-  .risk-box {
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-  }
-
-  .hero::after {
-    opacity: 0.35;
-  }
-}
