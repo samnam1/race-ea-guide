@@ -1535,7 +1535,54 @@
     .role:hover {
       transform: none !important;
     }
+/* iPhone Safari 배경 밝아짐 방지 */
+@supports (-webkit-touch-callout: none) {
+  body {
+    background:
+      radial-gradient(
+        circle at 50% 0%,
+        rgba(216, 182, 111, 0.07),
+        transparent 34%
+      ),
+      linear-gradient(
+        180deg,
+        #09111b 0%,
+        #060a10 55%,
+        #05080d 100%
+      ) !important;
+  }
 
+  .gr-orb {
+    display: none;
+  }
+
+  body::before {
+    opacity: 0.35;
+  }
+
+  body::after {
+    background:
+      radial-gradient(
+        circle at center,
+        transparent 35%,
+        rgba(0, 0, 0, 0.28) 100%
+      );
+  }
+
+  .hero,
+  .section,
+  .section-card,
+  .selector-panel,
+  .scope-notice,
+  .risk-box {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .hero::after {
+    opacity: 0.35;
+  }
+}
   </style>
 </head>
 
@@ -1906,51 +1953,3 @@
   </script>
 </body>
 </html>
-/* iPhone Safari 배경 밝아짐 방지 */
-@supports (-webkit-touch-callout: none) {
-  body {
-    background:
-      radial-gradient(
-        circle at 50% 0%,
-        rgba(216, 182, 111, 0.07),
-        transparent 34%
-      ),
-      linear-gradient(
-        180deg,
-        #09111b 0%,
-        #060a10 55%,
-        #05080d 100%
-      ) !important;
-  }
-
-  .gr-orb {
-    display: none;
-  }
-
-  body::before {
-    opacity: 0.35;
-  }
-
-  body::after {
-    background:
-      radial-gradient(
-        circle at center,
-        transparent 35%,
-        rgba(0, 0, 0, 0.28) 100%
-      );
-  }
-
-  .hero,
-  .section,
-  .section-card,
-  .selector-panel,
-  .scope-notice,
-  .risk-box {
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-  }
-
-  .hero::after {
-    opacity: 0.35;
-  }
-}
