@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>GOLD RACE 구동 사례 영상 | MT4 & GOLD RACE</title>
+
+  <meta
+    name="description"
+    content="GOLD RACE 실제 구동 사례 영상과 자동매매 사용 전 확인사항 안내"
+  >
+
+  <style>
+    :root {
+      --bg: #060a10;
+      --surface: #0e1621;
+      --surface-2: #131e2c;
+      --line: rgba(255, 255, 255, .085);
+      --gold: #d8b66f;
+      --gold-light: #f0d596;
+      --text: #f5f7fb;
+      --muted: #9da9b8;
+      --danger: #ffc1c1;
+      --danger-bg: rgba(255, 112, 112, .075);
+      --mouse-x: 50%;
+      --mouse-y: 18%;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body,
+    h1,
+    h2,
+    h3,
+    p,
+    span,
+    strong,
+    small,
+    li,
+    a,
+    button {
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      line-break: strict;
+      hyphens: none;
+    }
+
+    body {
+      position: relative;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--text);
+      font-family:
+        "Pretendard",
+        "Apple SD Gothic Neo",
+        "Malgun Gothic",
+        Arial,
+        sans-serif;
+      background:
+        radial-gradient(
+          circle at var(--mouse-x) var(--mouse-y),
+          rgba(216, 182, 111, .075),
+          transparent 31%
+        ),
+        linear-gradient(
+          180deg,
+          #09111b 0%,
+          var(--bg) 52%,
+          #05080d 100%
+        );
+    }
+
+    body::before {
+      position: fixed;
+      z-index: -5;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, .018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .018) 1px, transparent 1px);
+      background-size: 44px 44px;
+      -webkit-mask-image: linear-gradient(to bottom, #000, transparent 84%);
+      mask-image: linear-gradient(to bottom, #000, transparent 84%);
+      content: "";
+      pointer-events: none;
+    }
+
+    body::after {
+      position: fixed;
+      z-index: -3;
+      inset: 0;
+      background:
+        radial-gradient(
+          circle at center,
+          transparent 34%,
+          rgba(0, 0, 0, .42) 100%
+        );
+      content: "";
+      pointer-events: none;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .gr-ambient {
+      position: fixed;
+      z-index: -4;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .gr-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(24px);
+      opacity: .38;
+    }
+
+    .gr-orb-one {
+      top: -190px;
+      left: -150px;
+      width: 440px;
+      height: 440px;
+      background:
+        radial-gradient(
+          circle,
+          rgba(210, 171, 87, .55),
+          transparent 67%
+        );
+      animation: grDriftOne 14s ease-in-out infinite alternate;
+    }
+
+    .gr-orb-two {
+      top: 31%;
+      right: -220px;
+      width: 540px;
+      height: 540px;
+      background:
+        radial-gradient(
+          circle,
+          rgba(61, 109, 166, .30),
+          transparent 69%
+        );
+      animation: grDriftTwo 17s ease-in-out infinite alternate;
+    }
+
+    .gr-orb-three {
+      bottom: -280px;
+      left: 20%;
+      width: 590px;
+      height: 590px;
+      background:
+        radial-gradient(
+          circle,
+          rgba(155, 115, 48, .21),
+          transparent 70%
+        );
+      animation: grDriftThree 19s ease-in-out infinite alternate;
+    }
+
+    .gr-scroll-progress {
+      position: fixed;
+      z-index: 10000;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background:
+        linear-gradient(
+          90deg,
+          #8e6729,
+          var(--gold-light),
+          #fff2c4
+        );
+      box-shadow: 0 0 14px rgba(240, 213, 150, .8);
+      pointer-events: none;
+    }
+
+    .container {
+      width: min(100% - 24px, 1060px);
+      margin: 0 auto;
+      padding: 24px 0 72px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--gold-light);
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255, 255, 255, .045),
+          rgba(255, 255, 255, .015)
+        );
+      box-shadow:
+        0 12px 30px rgba(0, 0, 0, .24),
+        inset 0 1px 0 rgba(255, 255, 255, .035);
+      font-size: 13px;
+      font-weight: 850;
+      transition:
+        border-color .25s ease,
+        background .25s ease,
+        box-shadow .25s ease;
+    }
+
+    .back-link:hover {
+      border-color: rgba(216, 182, 111, .42);
+      background:
+        linear-gradient(
+          145deg,
+          rgba(216, 182, 111, .11),
+          rgba(255, 255, 255, .018)
+        );
+      box-shadow:
+        0 15px 38px rgba(0, 0, 0, .28),
+        0 0 24px rgba(216, 182, 111, .07);
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      padding: 36px 30px;
+      border: 1px solid rgba(216, 182, 111, .20);
+      border-radius: 28px;
+      background:
+        radial-gradient(
+          circle at 50% 0%,
+          rgba(216, 182, 111, .13),
+          transparent 46%
+        ),
+        linear-gradient(
+          145deg,
+          rgba(255, 255, 255, .055),
+          rgba(255, 255, 255, .015)
+        );
+      box-shadow:
+        0 28px 85px rgba(0, 0, 0, .43),
+        0 0 0 1px rgba(255, 255, 255, .018);
+    }
+
+    .hero::before {
+      position: absolute;
+      z-index: -1;
+      inset: -1px;
+      border-radius: inherit;
+      background:
+        conic-gradient(
+          from 180deg,
+          transparent,
+          rgba(216, 182, 111, .14),
+          transparent,
+          rgba(91, 129, 173, .13),
+          transparent
+        );
+      content: "";
+      opacity: .85;
+      animation: grSpin 19s linear infinite;
+      pointer-events: none;
+    }
+
+    .hero::after {
+      position: absolute;
+      top: -125%;
+      left: -25%;
+      width: 48%;
+      height: 340%;
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, .055),
+          transparent
+        );
+      content: "";
+      transform: rotate(18deg);
+      animation: grSweep 8.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .hero > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      padding: 7px 12px;
+      border: 1px solid rgba(216, 182, 111, .34);
+      border-radius: 999px;
+      color: var(--gold-light);
+      background: rgba(216, 182, 111, .085);
+      box-shadow: 0 0 20px rgba(216, 182, 111, .06);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .55px;
+    }
+
+    .hero h1 {
+      margin: 16px 0 12px;
+      color: transparent;
+      background:
+        linear-gradient(
+          100deg,
+          #fff 0%,
+          #f7e8bd 34%,
+          var(--gold-light) 51%,
+          #fff 78%,
+          #d9e6f4 100%
+        );
+      background-size: 220% auto;
+      background-clip: text;
+      -webkit-background-clip: text;
+      font-size: clamp(32px, 5vw, 52px);
+      line-height: 1.16;
+      letter-spacing: -1.4px;
+      animation: grTitle 8s linear infinite;
+    }
+
+    .hero p {
+      max-width: 860px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.85;
+      text-wrap: pretty;
+    }
+
+    .pre-notice,
+    .video-section,
+    .risk-section,
+    .full-notice {
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      margin-top: 24px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(17, 25, 37, .94),
+          rgba(10, 15, 23, .96)
+        );
+      box-shadow:
+        0 22px 58px rgba(0, 0, 0, .29),
+        inset 0 1px 0 rgba(255, 255, 255, .035);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+    }
+
+    .pre-notice::before,
+    .video-section::before,
+    .risk-section::before,
+    .full-notice::before {
+      position: absolute;
+      top: -130%;
+      left: -30%;
+      width: 38%;
+      height: 360%;
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, .035),
+          transparent
+        );
+      content: "";
+      transform: rotate(18deg);
+      animation: sectionSweep 11s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .pre-notice > *,
+    .video-section > *,
+    .risk-section > *,
+    .full-notice > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .pre-notice {
+      padding: 22px;
+      border-color: rgba(255, 154, 154, .22);
+      background:
+        radial-gradient(
+          circle at 100% 0%,
+          rgba(255, 112, 112, .08),
+          transparent 36%
+        ),
+        linear-gradient(
+          145deg,
+          rgba(37, 20, 25, .88),
+          rgba(10, 15, 23, .96)
+        );
+    }
+
+    .pre-notice-head {
+      display: flex;
+      gap: 13px;
+      align-items: flex-start;
+    }
+
+    .warning-icon {
+      display: grid;
+      flex: 0 0 auto;
+      width: 44px;
+      height: 44px;
+      place-items: center;
+      border: 1px solid rgba(255, 173, 173, .28);
+      border-radius: 14px;
+      color: var(--danger);
+      background: rgba(255, 112, 112, .09);
+      box-shadow:
+        0 0 0 1px rgba(240, 213, 150, .06),
+        0 8px 26px rgba(0, 0, 0, .24);
+      font-size: 19px;
+      font-weight: 900;
+    }
+
+    .pre-notice h2 {
+      margin: 0 0 8px;
+      color: #ffd0d0;
+      font-size: 18px;
+      text-shadow: 0 0 14px rgba(255, 112, 112, .11);
+    }
+
+    .pre-notice p {
+      margin: 0;
+      color: #c3afb4;
+      font-size: 12px;
+      line-height: 1.8;
+      text-wrap: pretty;
+    }
+
+    .video-section {
+      padding: 18px;
+    }
+
+    .video-frame {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(216, 182, 111, .22);
+      border-radius: 18px;
+      background: #000;
+      box-shadow:
+        0 20px 50px rgba(0, 0, 0, .4),
+        0 0 0 1px rgba(240, 213, 150, .07),
+        inset 0 1px 0 rgba(255, 255, 255, .03);
+    }
+
+    .video-frame::after {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        linear-gradient(
+          120deg,
+          transparent 0%,
+          rgba(255, 255, 255, .025) 46%,
+          rgba(240, 213, 150, .06) 50%,
+          rgba(255, 255, 255, .02) 54%,
+          transparent 100%
+        );
+      background-size: 220% 100%;
+      content: "";
+      animation: videoSweep 8.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    video {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      background: #000;
+    }
+
+    .risk-section {
+      padding: 26px 24px;
+    }
+
+    .risk-section h2 {
+      margin: 0 0 9px;
+      font-size: clamp(24px, 4vw, 34px);
+      letter-spacing: -.7px;
+      text-shadow: 0 0 18px rgba(216, 182, 111, .08);
+    }
+
+    .risk-lead {
+      max-width: 850px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+      text-wrap: pretty;
+    }
+
+    .risk-list {
+      display: grid;
+      gap: 11px;
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .risk-list li {
+      position: relative;
+      padding: 15px 16px 15px 42px;
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: 16px;
+      color: #afb9c6;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255, 255, 255, .032),
+          rgba(255, 255, 255, .012)
+        );
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .025);
+      font-size: 12px;
+      line-height: 1.75;
+      text-wrap: pretty;
+    }
+
+    .risk-list li::before {
+      position: absolute;
+      top: 17px;
+      left: 16px;
+      display: grid;
+      width: 17px;
+      height: 17px;
+      place-items: center;
+      border-radius: 50%;
+      color: #10161d;
+      background:
+        linear-gradient(
+          145deg,
+          var(--gold-light),
+          #9d742e
+        );
+      box-shadow:
+        0 7px 18px rgba(216, 182, 111, .15),
+        inset 0 1px 0 rgba(255, 255, 255, .4);
+      content: "!";
+      font-size: 9px;
+      font-weight: 900;
+    }
+
+    .full-notice {
+      padding: 23px;
+      border-color: rgba(255, 130, 130, .2);
+      background:
+        radial-gradient(
+          circle at 100% 0%,
+          rgba(255, 112, 112, .06),
+          transparent 36%
+        ),
+        linear-gradient(
+          145deg,
+          rgba(35, 19, 24, .86),
+          rgba(10, 15, 23, .96)
+        );
+    }
+
+    .full-notice h2 {
+      margin: 0 0 10px;
+      color: #ffcaca;
+      font-size: 18px;
+      text-shadow: 0 0 14px rgba(255, 112, 112, .11);
+    }
+
+    .full-notice p {
+      margin: 0;
+      color: #b9a8ad;
+      font-size: 12px;
+      line-height: 1.85;
+      text-wrap: pretty;
+    }
+
+    .full-notice strong {
+      color: #f2d7d7;
+    }
+
+    .bottom-note {
+      margin: 15px 0 0;
+      color: #727e8d;
+      font-size: 10px;
+      line-height: 1.7;
+      text-align: center;
+    }
+
+    footer {
+      padding-top: 28px;
+      color: #5f6b7a;
+      font-size: 10px;
+      text-align: center;
+    }
+
+    .gr-js .gr-reveal {
+      opacity: 0;
+      transform: translateY(26px) scale(.982);
+      transition:
+        opacity .75s ease,
+        transform .85s cubic-bezier(.16, 1, .3, 1);
+    }
+
+    .gr-js .gr-reveal.gr-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    @keyframes grSpin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes grTitle {
+      to {
+        background-position: -220% center;
+      }
+    }
+
+    @keyframes grSweep {
+      0%,
+      34% {
+        transform: rotate(18deg) translateX(-190%);
+      }
+
+      68%,
+      100% {
+        transform: rotate(18deg) translateX(390%);
+      }
+    }
+
+    @keyframes sectionSweep {
+      0%,
+      45% {
+        transform: rotate(18deg) translateX(-190%);
+      }
+
+      72%,
+      100% {
+        transform: rotate(18deg) translateX(410%);
+      }
+    }
+
+    @keyframes videoSweep {
+      0%,
+      42% {
+        background-position: 135% 0;
+        opacity: .08;
+      }
+
+      68%,
+      100% {
+        background-position: -30% 0;
+        opacity: .20;
+      }
+    }
+
+    @keyframes grDriftOne {
+      from {
+        transform: translate3d(-20px, -15px, 0) scale(.92);
+      }
+
+      to {
+        transform: translate3d(95px, 80px, 0) scale(1.12);
+      }
+    }
+
+    @keyframes grDriftTwo {
+      from {
+        transform: translate3d(20px, -25px, 0) scale(.9);
+      }
+
+      to {
+        transform: translate3d(-120px, 100px, 0) scale(1.1);
+      }
+    }
+
+    @keyframes grDriftThree {
+      from {
+        transform: translate3d(-45px, 30px, 0) scale(.9);
+      }
+
+      to {
+        transform: translate3d(120px, -80px, 0) scale(1.13);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .container {
+        width: min(100% - 18px, 1060px);
+        padding-top: 16px;
+      }
+
+      .hero {
+        padding: 28px 20px;
+        border-radius: 22px;
+      }
+
+      .hero h1 {
+        font-size: 31px;
+      }
+
+      .video-section {
+        padding: 10px;
+      }
+
+      .pre-notice,
+      .risk-section,
+      .full-notice {
+        padding: 19px;
+      }
+
+      .pre-notice-head {
+        gap: 11px;
+      }
+
+      .warning-icon {
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    @supports (-webkit-touch-callout: none) {
+      html,
+      body {
+        background: #060a10 !important;
+      }
+
+      body {
+        background:
+          radial-gradient(
+            circle at 50% 0%,
+            rgba(216, 182, 111, .055),
+            transparent 32%
+          ),
+          linear-gradient(
+            180deg,
+            #09111b 0%,
+            #060a10 55%,
+            #05080d 100%
+          ) !important;
+      }
+
+      .gr-ambient {
+        display: none !important;
+      }
+
+      body::before {
+        opacity: .2;
+      }
+
+      .hero,
+      .pre-notice,
+      .video-section,
+      .risk-section,
+      .full-notice {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+      }
+
+      .hero::before {
+        opacity: .18;
+        animation: none;
+      }
+
+      .hero::after,
+      .pre-notice::before,
+      .video-section::before,
+      .risk-section::before,
+      .full-notice::before,
+      .video-frame::after {
+        display: none;
+        animation: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+
+      .gr-js .gr-reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="gr-ambient" aria-hidden="true">
+    <div class="gr-orb gr-orb-one"></div>
+    <div class="gr-orb gr-orb-two"></div>
+    <div class="gr-orb gr-orb-three"></div>
+  </div>
+
+  <div
+    class="gr-scroll-progress"
+    id="grScrollProgress"
+    aria-hidden="true"
+  ></div>
+
+  <main class="container">
+    <a class="back-link" href="index.html">← 메인 화면으로 돌아가기</a>
+
+    <section class="hero">
+      <span class="eyebrow">GOLD RACE · OPERATION CASE VIDEO</span>
+
+      <h1>GOLD RACE 실제 구동 사례 영상</h1>
+
+      <p>
+        GOLD RACE의 주문 실행과 포지션 관리 흐름을 보여주는 사례 영상입니다.
+        영상에 표시된 결과는 특정 계좌·기간·설정값에서 발생한 개별 사례이며,
+        일반적인 성과나 향후 수익을 의미하지 않습니다.
+      </p>
+    </section>
+
+    <section class="pre-notice" aria-label="영상 재생 전 안전 안내">
+      <div class="pre-notice-head">
+        <div class="warning-icon">!</div>
+
+        <div>
+          <h2>영상 재생 전 반드시 확인해야 합니다</h2>
+
+          <p>
+            본 영상은 수익이 발생한 특정 구간을 중심으로 편집한 사례 자료입니다.
+            영상에 표시된 수익률과 손익은 동일하게 재현되거나 지속된다고 볼 수 없으며,
+            전체 거래기간의 모든 손익·비용·손실 구간을 의미하지 않습니다.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="video-section" aria-label="GOLD RACE 홍보 영상">
+      <div class="video-frame">
+        <video
+          controls
+          autoplay
+          muted
+          playsinline
+          preload="auto"
+          aria-label="GOLD RACE 실제 구동 사례 홍보 영상"
+        >
+          <source src="./gold-race-promo.mp4" type="video/mp4">
+
+          현재 브라우저에서는 동영상 재생을 지원하지 않습니다.
+        </video>
+      </div>
+    </section>
+
+    <section class="risk-section">
+      <h2>자동매매 사용 전 확인해야 할 사항</h2>
+
+      <p class="risk-lead">
+        수익 장면만으로 프로그램 전체를 판단하기는 어렵습니다.
+        실제 거래에서는 아래와 같은 상황으로 영상과 다른 결과가 발생할 수 있습니다.
+      </p>
+
+      <ul class="risk-list">
+        <li>
+          골드 가격이 한 방향으로 강하게 움직이면 추가 진입이 연속으로 발생하고,
+          누적 랏·평가손실·필요 증거금이 빠르게 증가할 수 있습니다.
+        </li>
+
+        <li>
+          스프레드 확대, 슬리피지, 체결 지연, 서버·통신 장애와 급격한 시세 변동으로
+          설정한 가격과 다른 조건에서 주문 또는 청산이 이루어질 수 있습니다.
+        </li>
+
+        <li>
+          동일한 프로그램을 사용하더라도 계좌 잔고, 레버리지, 첫 진입 랏수,
+          중단 시점과 시장 상황에 따라 손익 결과가 크게 달라질 수 있습니다.
+        </li>
+
+        <li>
+          과거 또는 특정 기간에 발생한 수익은 미래 성과를 예측하거나 보장하는 근거가 아니며,
+          원금의 일부 또는 전부를 잃을 수 있습니다.
+        </li>
+      </ul>
+    </section>
+
+    <section
+      class="full-notice"
+      aria-label="법적 위험 완화를 위한 중요 안내"
+    >
+      <h2>중요 안내</h2>
+
+      <p>
+        본 영상은
+        <strong>
+          GOLD RACE의 기능과 실제 구동 사례를 설명하기 위한 홍보·안내 자료
+        </strong>
+        입니다. 영상에 표시된 수익률·손익·계좌 결과는 특정 계좌,
+        특정 기간 및 특정 설정값에서 발생한 개별 사례이며,
+        일반적인 결과나 향후 성과를 의미하지 않습니다.
+        GOLD RACE는 설정값과 시장 상황에 따라 손실이 빠르게 확대될 수 있는
+        자동매매 프로그램이므로, 사용 전 구조와 위험을 충분히 확인한 뒤
+        사용 여부와 설정값을 직접 판단해야 합니다.
+      </p>
+    </section>
+
+    <p class="bottom-note">
+      홍보 자료 사용 시 실제 운영 방식과 안내 문구 전반에 대한
+      추가 검토가 필요할 수 있습니다.
+    </p>
+
+    <footer>
+      MT4 &amp; GOLD RACE CASE VIDEO GUIDE © 2026
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      document.documentElement.classList.add("gr-js");
+
+      const root = document.documentElement;
+      const progress = document.getElementById("grScrollProgress");
+      const reduced = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+
+      function updateProgress() {
+        const max =
+          document.documentElement.scrollHeight - window.innerHeight;
+
+        const value =
+          max > 0
+            ? Math.min(
+                100,
+                Math.max(0, (window.scrollY / max) * 100)
+              )
+            : 0;
+
+        if (progress) {
+          progress.style.width = value + "%";
+        }
+      }
+
+      updateProgress();
+
+      window.addEventListener("scroll", updateProgress, {
+        passive: true
+      });
+
+      window.addEventListener("resize", updateProgress);
+
+      if (
+        !reduced &&
+        window.matchMedia("(pointer: fine)").matches
+      ) {
+        window.addEventListener(
+          "pointermove",
+          function (event) {
+            root.style.setProperty(
+              "--mouse-x",
+              (event.clientX / window.innerWidth) * 100 + "%"
+            );
+
+            root.style.setProperty(
+              "--mouse-y",
+              (event.clientY / window.innerHeight) * 100 + "%"
+            );
+          },
+          {
+            passive: true
+          }
+        );
+      }
+
+      const targets = document.querySelectorAll(
+        ".hero, .pre-notice, .video-section, .risk-section, .full-notice"
+      );
+
+      targets.forEach(function (element) {
+        element.classList.add("gr-reveal");
+      });
+
+      if (
+        !reduced &&
+        "IntersectionObserver" in window
+      ) {
+        const observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("gr-visible");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          {
+            threshold: .08,
+            rootMargin: "0px 0px -20px 0px"
+          }
+        );
+
+        targets.forEach(function (element) {
+          observer.observe(element);
+        });
+      } else {
+        targets.forEach(function (element) {
+          element.classList.add("gr-visible");
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
